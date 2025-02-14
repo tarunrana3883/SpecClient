@@ -9,6 +9,7 @@ import {
   Home,
   Otpverification,
   Footer,
+  ShopkeeperSignUp
 } from "./components/allcomponents";
 
 const PrivateOtpRoute = ({ otpverify }) => {
@@ -16,7 +17,7 @@ const PrivateOtpRoute = ({ otpverify }) => {
 };
 
 export default function App() {
-  const [otpverify, setOtpVerify] = useState(false);
+  const [otpverify, setOtpVerify] = useState(true);
 
   return (
     <BrowserRouter>
@@ -24,6 +25,7 @@ export default function App() {
       <Routes>
         {/* Public Routes */}
         <Route path="/Signin" element={<Signin setOtpVerify={setOtpVerify} />} />
+        <Route path="/ShopkeeperSignUp" element={<ShopkeeperSignUp />} />
         <Route path="/" element={<Home />} />
         <Route path="/Login" element={<Login setOtpVerify={setOtpVerify} />} />
         <Route path="/About" element={<About />} />

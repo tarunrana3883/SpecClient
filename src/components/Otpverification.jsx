@@ -9,8 +9,10 @@ export default function OtpVerification() {
   const otpRefs = useRef([]);
   const navigate = useNavigate();
   const { id } = useParams();
+  const [loading, setLoading] = useState(false);
 
-  // Focus management for OTP inputs
+  const email = sessionStorage.getItem('UserEmail')
+
   const handleChange = (e, index) => {
     const value = e.target.value;
 
@@ -19,7 +21,6 @@ export default function OtpVerification() {
       updatedOtp[index] = value;
       setOtp(updatedOtp);
 
-      // Move to the next input
       if (index < otp.length - 1 && value) {
         otpRefs.current[index + 1].focus();
       }
@@ -44,6 +45,7 @@ export default function OtpVerification() {
 
     setError('');
     try {
+      setLoading(true);
       const url = `${localhostURL}OtpVerification/${id}`;
       const response = await axios.post(url, { otp: enteredOtp });
      
@@ -54,6 +56,9 @@ export default function OtpVerification() {
       }
     } catch (error) {
       setError(error.response?.data?.msg || 'Something went wrong. Please try again.');
+    }
+    finally {
+      setLoading(false); 
     }
   };
 
@@ -73,8 +78,11 @@ export default function OtpVerification() {
     <section className="bg-gradient-to-r from-blue-500 to-purple-600 min-h-screen flex justify-center items-center">
       <div className="w-full max-w-md px-6 py-8 mx-auto bg-white rounded-lg shadow-lg dark:bg-gray-800">
         <h2 className="text-3xl font-bold text-center text-gray-800 dark:text-white mb-6">
-          OTP Verification
+          OTP Verification 
         </h2>
+        <h1 className="text-xl text-center text-gray-800 dark:text-white mb-6">
+          {email}
+        </h1>
 
         {error && (
           <div className="mb-4 text-red-600 text-center">
@@ -101,11 +109,23 @@ export default function OtpVerification() {
             ))}
           </div>
 
+         
           <button
             type="submit"
-            className="w-full py-3 rounded-lg text-white bg-blue-600 hover:bg-blue-500"
+            disabled={loading} // ⬅️ Disable button while loading
+            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-500 transition-transform duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 flex items-center justify-center"
           >
-            Submit
+            {loading ? (
+              <div className="flex items-center">
+                <svg className="animate-spin h-5 w-5 mr-3 text-white" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 100 16v-4l-3 3 3 3v-4a8 8 0 01-8-8z"></path>
+                </svg>
+                Submit...
+              </div>
+            ) : (
+              'Submit'
+            )}
           </button>
         </form>
 
@@ -114,6 +134,7 @@ export default function OtpVerification() {
           <button onClick={handleResendOtp} className="text-blue-600 hover:underline">
             Resend OTP
           </button>
+          
         </p>
       </div>
     </section>

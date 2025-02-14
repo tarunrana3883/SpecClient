@@ -15,7 +15,8 @@ const DropDowndiv = () => {
         { logo: <CgProfile />, name: 'My Profile', link: "/Myprofile" },
         { logo: <IoSettingsSharp />, name: 'Edit Profile', link: "/Editprofile" },
         { logo: <RiLoginCircleFill />, name: 'Log In', link: "/Login" },
-        { logo: <RiLogoutCircleFill />, name: 'Registration', link: "/Signin" }
+        { logo: <RiLogoutCircleFill />, name: 'Registration', link: "/Signin" },
+        { logo: <RiLogoutCircleFill />, name: 'ShopKeeper SignIn', link: "/ShopkeeperSignUp" }
     ];
 
     return (

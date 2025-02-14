@@ -9,5 +9,6 @@ export {default as Shopkeeperlogin} from './Shopkeeperlogin'
 export {default as Otpverification} from './Otpverification'
 export {default as Footer} from './Footer'
 export {default as AllDetails} from './ShopkeerData/AllDetails'
+export {default as ShopkeeperSignUp} from './ShopkeerData/ShopkeeperSignUp'
 
 
