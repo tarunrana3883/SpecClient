@@ -46,3 +46,17 @@ export const UserSchema = Yup.object().shape({
   //     return value.size <= 5 * 1024 * 1024; // Validates file size (5MB limit)
   //   }),
 });
+
+
+
+
+export const ProductSchema = Yup.object().shape({
+  title: Yup.string().required('Title is required'),
+  description: Yup.string().required('Description is required'),
+  category: Yup.string().required('Category is required'),
+  size: Yup.string().required('Size is required'),
+  fashion: Yup.string().required('Fashion category is required'),
+  price: Yup.number().typeError('Price must be a number').required('Price is required'),
+  modelNo: Yup.string().required('Model number is required'),
+  image: Yup.mixed().required('Image is required'),
+});

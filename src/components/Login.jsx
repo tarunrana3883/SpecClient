@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { localhostURL } from "./url";
+import { showErrorToast, showSuccessToast} from "./Toastify/Toastifynotification";
 
 export default function Login({ setOtpVerify }) {
   const navigate = useNavigate();
@@ -20,14 +21,14 @@ export default function Login({ setOtpVerify }) {
       const { id, token, status } = response.data;
 
       if (!status) {
-        window.alert("Invalid data");
+        showErrorToast("Invalid data")
       } else {
         sessionStorage.setItem("Userid", id);
         sessionStorage.setItem("AcessToken", token);
         navigate("/");
       }
     } catch (error) {
-      window.alert(error?.response?.data?.msg || "Something went wrong");
+      showErrorToast(error?.response?.data?.msg || "Something went wrong")
     }
   };
 
@@ -40,7 +41,7 @@ export default function Login({ setOtpVerify }) {
       const { id, token, status } = response.data;
 
       if (!status) {
-        window.alert("Invalid data");
+        showErrorToast("Invalid data")
       } else {
         sessionStorage.setItem("ShopKeeperid", id);
         sessionStorage.setItem("ShopKeeperAcessToken", token);
@@ -48,7 +49,7 @@ export default function Login({ setOtpVerify }) {
         navigate("/ShopkeeperaddSpecs");
       }
     } catch (error) {
-      window.alert(error?.response?.data?.msg || "Something went wrong");
+      showErrorToast(error?.response?.data?.msg || "Something went wrong")
     }
   };
 

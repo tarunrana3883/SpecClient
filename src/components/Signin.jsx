@@ -5,7 +5,7 @@ import { UserSchema } from '../components/Validation/SignUpValidation';
 import { useFormik } from 'formik';
 import { localhostURL } from '../components/url';
 import axios from 'axios';
-
+import { showWarningToast,showErrorToast,showSuccessToast } from './Toastify/Toastifynotification';
 export default function ShopkeeperSignUp({ setOtpVerify }) {
   const navigate = useNavigate();
   const [imageFile, setImageFile] = useState(null);
@@ -45,14 +45,17 @@ export default function ShopkeeperSignUp({ setOtpVerify }) {
         else {
           setOtpVerify(true);
           sessionStorage.setItem('UserEmail',email)
+          showSuccessToast("successfully signed up user")
           navigate(`/Otpverification/${id}`);
         }
       } catch (error) {
         
         if(error.response.data.msg == 'Account is Already Active Pls LogIn'){
+          showSuccessToast("Account is Already Active Pls LogIn")
           navigate(`/Login`);
         }
-        window.alert(error.response?.data?.msg || "Error occurred");
+        showWarningToast(error.response?.data?.msg || "Error occurred")
+
       }
       finally {
         setLoading(false); 

@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { localhostURL } from './url';
+import {showErrorToast,showSuccessToast} from "./Toastify/Toastifynotification"
 
 export default function OtpVerification() {
   const [otp, setOtp] = useState(['', '', '', '']);
@@ -50,12 +51,13 @@ export default function OtpVerification() {
       const response = await axios.post(url, { otp: enteredOtp });
      
       if (response.data.success) {
+        showSuccessToast("Successfully verify otp")
         navigate('/Login'); 
       } else {
-        setError('Invalid OTP. Please try again.');
+        showErrorToast('Invalid OTP. Please try again.')
       }
     } catch (error) {
-      setError(error.response?.data?.msg || 'Something went wrong. Please try again.');
+      showErrorToast(error.response?.data?.msg || 'Something went wrong. Please try again.')
     }
     finally {
       setLoading(false); 
@@ -64,13 +66,13 @@ export default function OtpVerification() {
 
   // Resend OTP Functionality
   const handleResendOtp = async () => {
-    setError('');
+    
     try {
-      const url = `${localhostURL}ResendOtp/${id}`;
-      await axios.post(url);
-      alert('OTP resent successfully.');
+      const url = `${localhostURL}Resendotp/${id}`;
+      await axios.get(url);
+      showSuccessToast('OTP resent successfully.')
     } catch (error) {
-      setError(error.response?.data?.msg || 'Failed to resend OTP. Please try again.');
+      showErrorToast(error.response?.data?.msg || 'Failed to resend OTP. Please try again.')
     }
   };
 

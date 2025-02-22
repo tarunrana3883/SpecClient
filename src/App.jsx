@@ -11,6 +11,7 @@ import {
   Footer,
   ShopkeeperSignUp
 } from "./components/allcomponents";
+import Sidebar from "./components/ShopkeerData/ProductDAshboard/Sidebar";  
 
 const PrivateOtpRoute = ({ otpverify }) => {
   return otpverify ? <Outlet /> : <Navigate replace to="/" />;
@@ -34,6 +35,7 @@ export default function App() {
         <Route element={<PrivateOtpRoute otpverify={otpverify} />}>
           <Route path="/Otpverification/:id" element={<Otpverification />} />
           <Route path="/ShopkeeperaddSpecs" element={<AllDetails />} />
+          <Route path="/Viewdashboard" element={<Sidebar/>}/>
         </Route>
       </Routes>
       <Footer />
