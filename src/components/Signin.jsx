@@ -5,23 +5,16 @@ import { UserSchema } from '../components/Validation/SignUpValidation';
 import { useFormik } from 'formik';
 import { localhostURL } from '../components/url';
 import axios from 'axios';
-import { showWarningToast,showErrorToast,showSuccessToast } from './Toastify/Toastifynotification';
+import { showWarningToast, showSuccessToast } from './Toastify/Toastifynotification';
 export default function ShopkeeperSignUp({ setOtpVerify }) {
   const navigate = useNavigate();
   const [imageFile, setImageFile] = useState(null);
-  const [showPassword, setShowPassword] = useState(false); 
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false); 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const { values, errors, touched, handleBlur, handleChange, handleSubmit, setFieldValue } = useFormik({
-    initialValues: {
-      name: '',
-      userName: '',
-      mobileNo: '',
-      password: '',
-      confirmPassword: '',
-      profileImg: null,
-    },
+    initialValues: { name: '', userName: '', mobileNo: '', password: '', confirmPassword: '', profileImg: null, },
     validationSchema: UserSchema,
     onSubmit: async (values) => {
       try {
@@ -33,24 +26,24 @@ export default function ShopkeeperSignUp({ setOtpVerify }) {
 
         const url = `${localhostURL}createUser`;
         const response = await axios.post(url, formData);
-       
+
         const id = response.data.data.id;
         const email = response.data.data.userName
         const log = response.data.msg
-        
-        if (!response.data.status) {   
+
+        if (!response.data.status) {
           window.alert("Invalid data");
-        } 
-       
+        }
+
         else {
           setOtpVerify(true);
-          sessionStorage.setItem('UserEmail',email)
+          sessionStorage.setItem('UserEmail', email)
           showSuccessToast("successfully signed up user")
           navigate(`/Otpverification/${id}`);
         }
       } catch (error) {
-        
-        if(error.response.data.msg == 'Account is Already Active Pls LogIn'){
+
+        if (error.response.data.msg == 'Account is Already Active Pls LogIn') {
           showSuccessToast("Account is Already Active Pls LogIn")
           navigate(`/Login`);
         }
@@ -58,22 +51,19 @@ export default function ShopkeeperSignUp({ setOtpVerify }) {
 
       }
       finally {
-        setLoading(false); 
+        setLoading(false);
       }
     },
   });
 
-  // Toggle password visibility
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  // Toggle confirm password visibility
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
-  // Input data array
   const inputdata = [
     { icons: <FaUser />, name: 'name', label: 'Name', placeholder: 'Enter your name', type: 'text' },
     { icons: <FaEnvelope />, name: 'userName', label: 'Email', placeholder: 'Enter your email', type: 'email' },
@@ -101,9 +91,8 @@ export default function ShopkeeperSignUp({ setOtpVerify }) {
                   value={values[name]}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full text-white pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition placeholder:text-gray-500 ${
-                    errors[name] && touched[name] ? 'border-red-500' : ''
-                  }`}
+                  className={`w-full text-white pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition placeholder:text-gray-500 ${errors[name] && touched[name] ? 'border-red-500' : ''
+                    }`}
                   placeholder={placeholder}
                 />
                 {/* Show/Hide Password Icons */}

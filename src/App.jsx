@@ -18,7 +18,7 @@ const PrivateOtpRoute = ({ otpverify }) => {
 };
 
 export default function App() {
-  const [otpverify, setOtpVerify] = useState(true);
+  const [otpverify, setOtpVerify] = useState(false);
 
   return (
     <BrowserRouter>
@@ -26,7 +26,7 @@ export default function App() {
       <Routes>
         {/* Public Routes */}
         <Route path="/Signin" element={<Signin setOtpVerify={setOtpVerify} />} />
-        <Route path="/ShopkeeperSignUp" element={<ShopkeeperSignUp />} />
+        <Route path="/ShopkeeperSignUp" element={<ShopkeeperSignUp setOtpVerify={setOtpVerify}/>} />
         <Route path="/" element={<Home />} />
         <Route path="/Login" element={<Login setOtpVerify={setOtpVerify} />} />
         <Route path="/About" element={<About />} />

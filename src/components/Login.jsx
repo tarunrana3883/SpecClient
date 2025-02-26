@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { localhostURL } from "./url";
-import { showErrorToast, showSuccessToast} from "./Toastify/Toastifynotification";
+import { showErrorToast, showSuccessToast } from "./Toastify/Toastifynotification";
 
 export default function Login({ setOtpVerify }) {
   const navigate = useNavigate();
@@ -46,10 +46,16 @@ export default function Login({ setOtpVerify }) {
         sessionStorage.setItem("ShopKeeperid", id);
         sessionStorage.setItem("ShopKeeperAcessToken", token);
         setOtpVerify(true);
-        navigate("/ShopkeeperaddSpecs");
+        navigate("/Viewdashboard");
       }
     } catch (error) {
-      showErrorToast(error?.response?.data?.msg || "Something went wrong")
+      console.log(error.response.data.msg);
+      if (error.response.data.msg == 'Otp Verification Pending') {
+        showErrorToast(error.response.data.msg);
+        navigate(`/Otpverification/${error.response.data.id}`);
+      }
+      else showErrorToast(error?.response?.data?.msg || "Something went wrong")
+
     }
   };
 

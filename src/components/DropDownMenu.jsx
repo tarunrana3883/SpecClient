@@ -1,14 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { CgProfile } from "react-icons/cg";
 import { IoSettingsSharp } from "react-icons/io5";
 import { RiLoginCircleFill, RiLogoutCircleFill } from "react-icons/ri";
-import { CiUser } from "react-icons/ci";
+
 const DropDowndiv = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const closeTimeoutRef = useRef(null);
 
-    const toggleDropdown = () => {
-        setIsOpen(!isOpen);
+    const handleMouseEnter = () => {
+        setIsOpen(true);
+        if (closeTimeoutRef.current) {
+            clearTimeout(closeTimeoutRef.current);
+        }
+    };
+
+    const handleMouseLeave = () => {
+        closeTimeoutRef.current = setTimeout(() => {
+            setIsOpen(false);
+        }, 1000); 
     };
 
     const DropDownMenu = [
@@ -20,17 +30,18 @@ const DropDowndiv = () => {
     ];
 
     return (
-        <div className="relative inline-block text-left">
-            <div>
-                <i
-                    onClick={toggleDropdown}
-                    className="fa-solid fa-user text-gray-400 text-2xl cursor-pointer"
-                />
-            </div>
+        <div className="relative inline-block text-left" 
+            onMouseEnter={handleMouseEnter} 
+            onMouseLeave={handleMouseLeave}
+        >
+            <i 
+                onClick={() => setIsOpen(!isOpen)}
+                className="fa-solid fa-user text-gray-400 text-2xl cursor-pointer"
+            />
 
             {isOpen && (
-                <div className="absolute right-0 ml-[200px] z-10 mt-4 w-[200px] rounded-md shadow-lg bg-gray-300 ring-1 ring-black ring-opacity-5">
-                    <div className="py-1" aria-orientation="vertical" aria-labelledby="options-div">
+                <div className="absolute right-0 z-10 mt-4 w-[200px] rounded-md shadow-lg bg-gray-300 ring-1 ring-black ring-opacity-5">
+                    <div className="py-1">
                         <table>
                             <tbody>
                                 {DropDownMenu.map((value, key) => (

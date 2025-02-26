@@ -1,32 +1,62 @@
 import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import { FaUser, FaEnvelope, FaPhone, FaLock, FaImage, FaEye, FaEyeSlash, FaExclamationCircle } from 'react-icons/fa';
-import { UserSchema } from '../Validation/SignUpValidation';
+import axios from 'axios'; 
+import { ShopKeeperSchema } from '../Validation/SignUpValidation';
+import { useNavigate } from 'react-router-dom'; 
+import { showWarningToast, showSuccessToast } from '../Toastify/Toastifynotification';
+import { localhostURL } from '../url';
+
+
 
 export default function ShopkeeperSignUp({ setOtpVerify }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
 
   const { values, errors, touched, handleBlur, handleChange, handleSubmit, setFieldValue } = useFormik({
-    initialValues: {
-      name: '',
-      userName: '',
-      mobileNo: '',
-      password: '',
-      confirmPassword: '',
-      profileImg: null,
-    },
-    validationSchema: UserSchema,
-    onSubmit: (values) => {
-      setLoading(true);
-      setTimeout(() => {
+    initialValues: { name: '', userName: '', mobileNo: '', password: '', confirmPassword: '', profileImg: null, shopkeeperdescription: ''},
+    validationSchema: ShopKeeperSchema,
+    onSubmit: async (values) => {
+      try {
+        setLoading(true);
+        const formData = new FormData();
+        Object.keys(values).forEach((key) => {
+          formData.append(key, values[key]);
+        });
+
+        const url = `${localhostURL}Createshopkeeper`;
+        const response = await axios.post(url, formData);
+      
+        const id = response.data.data.id;
+        const email = response.data.data.userName;
+        const img = response.data.msg;
+        console.log(img);
+
+        if (!response.data.status) {
+          window.alert("Invalid data");
+        } else {
+          setOtpVerify(true);
+          sessionStorage.setItem('ShopkeeperEmail', email);
+          showSuccessToast(response.data.msg);
+          navigate(`/Otpverification/${id}`);
+        }
+      } catch (error) {
+        if (error.response && error.response.data.msg === 'Account is Already Active Pls LogIn') {
+          showSuccessToast("Account is Already Active Pls LogIn");
+          navigate(`/Login`);
+        } 
+        else {
+          showWarningToast(error.response?.data?.msg || "Error occurred");
+        }
+      } finally {
         setLoading(false);
-        alert('Account created successfully!');
-      }, 2000);
+        
+      }
     },
   });
 
@@ -51,17 +81,12 @@ export default function ShopkeeperSignUp({ setOtpVerify }) {
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{label}</label>
               <div className="relative">
                 <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">{icons}</div>
-                <input
-                  name={name}
-                  type={type}
-                  value={values[name]}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
+                <input name={name} type={type} value={values[name]} onChange={handleChange} onBlur={handleBlur}
                   className={`w-full text-gray-900 dark:text-white pl-10 pr-10 py-3 border-[1.5px] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition bg-gray-50 dark:bg-gray-700 placeholder-gray-500 
                     ${
                       errors[name] && touched[name]
-                        ? 'border-red-500 bg-red-50 dark:bg-red-900' // Error state
-                        : 'border-gray-300 dark:border-gray-600' // Normal state
+                        ? 'border-red-500 bg-red-50 dark:bg-red-900'
+                        : 'border-gray-300 dark:border-gray-600' 
                     }`}
                   placeholder={placeholder}
                 />
@@ -79,14 +104,38 @@ export default function ShopkeeperSignUp({ setOtpVerify }) {
             </div>
           ))}
 
-          {/* Upload Image */}
+          <div className="mb-5">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
+            <div className="relative">
+              <FaEnvelope className="absolute left-3 top-3 text-gray-500" />
+              <textarea
+                name="shopkeeperdescription"
+                value={values.shopkeeperdescription}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                rows="4"
+                className={`w-full text-gray-900 dark:text-white pl-10 pr-4 py-3 border-[1.5px] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition bg-gray-50 dark:bg-gray-700 placeholder-gray-500 
+                  ${
+                    errors.shopkeeperdescription && touched.shopkeeperdescription
+                      ? 'border-red-500 bg-red-50 dark:bg-red-900'
+                      : 'border-gray-300 dark:border-gray-600' 
+                  }`}
+                placeholder="Enter your description"
+              />
+              {errors.shopkeeperdescription && touched.shopkeeperdescription && (
+                <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                  <FaExclamationCircle /> {errors.shopkeeperdescription}
+                </p>
+              )}
+            </div>
+          </div>
+
           <div className="mb-5">
             <label htmlFor="profileImg" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Upload Image
             </label>
             <div className="relative">
-             
-              <FaImage className="absolute left-3 top-1/2 bottom-1/2 transform -translate-y-1/2 text-gray-500" />
+              <FaImage className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
               <input
                 name="profileImg"
                 type="file"
@@ -96,7 +145,6 @@ export default function ShopkeeperSignUp({ setOtpVerify }) {
                 }}
                 className="w-full pl-10 pr-4 py-3 border-[1.5px] border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition bg-gray-50 dark:bg-gray-700"
               />
-             
               {errors.profileImg && touched.profileImg && (
                 <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
                   <FaExclamationCircle /> {errors.profileImg}
@@ -105,7 +153,6 @@ export default function ShopkeeperSignUp({ setOtpVerify }) {
             </div>
           </div>
 
-          {/* Submit Button with Loading State */}
           <button
             type="submit"
             className="w-full flex items-center justify-center bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-500 transition-transform duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300"

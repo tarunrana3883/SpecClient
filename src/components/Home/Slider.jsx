@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import sunglass from "../assets/images/sunglass.png"
-import screenglass from "../assets/images/screenglasses.png"
+import sunglass from "../../assets/images/sunglass.png"
+import screenglass from "../../assets/images/screenglasses.png"
 
 const images = [
    " https://static5.lenskart.com/media/uploads/hechome11.png "      ,
@@ -22,12 +22,12 @@ export default function ImageSlider() {
   };
 
   return (
-    <div className="relative w-full h-full mx-auto bg-gray-300">
-      <div className="overflow-hidden rounded-2xl shadow-lg">
+    <div className="relative w-full h-[400px] mx-auto bg-gray-300 pb-5">
+      <div className="overflow-hidden rounded-2xl shadow-lg ">
         <img
           src={images[currentIndex]}
           alt={`Slide ${currentIndex + 1}`}
-          className="w-full h-64 object-cover"
+          className="w-full h-[400px] object-cover"
         />
       </div>
       <button
